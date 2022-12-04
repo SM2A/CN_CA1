@@ -14,8 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup
-      run: chmod +X make.sh
-
     - name: Make
-      run: ./make.sh
+      run: |
+        chmod +X make.sh
+        ./make.sh
