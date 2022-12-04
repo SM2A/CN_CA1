@@ -16,5 +16,5 @@ jobs:
 
     - name: Make
       run: |
-        chmod +X make.sh
+        chmod +x make.sh
         ./make.sh
