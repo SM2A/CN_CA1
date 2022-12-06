@@ -2,9 +2,12 @@
 #define FTP_SERVER_CLIENT_STATIC
 
 #define SERVER_ADDRESS "127.0.0.1"
-#define ERROR "#$ERROR$#"
-#define BUFFER 20000
-#define CONSOLE "#$CONSOLE$#"
-#define _FILE_ "#$FILE$#"
+
+#define BUFFER (1024 * 1024)
+
+#define TYPE_ERROR "#$ERROR$#"
+
+#define TYPE_FILE "#$FILE$#"
+#define TYPE_CONSOLE "#$CONSOLE$#"
 
 #endif

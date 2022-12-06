@@ -20,15 +20,18 @@ private:
     Client() {}
 
     int connectServer(int port);
+    void startData();
     bool responseCode(std::string msg, int code);
     void receiveDataResponse();
+    void handleUploadCommand(std::string path);
+    std::string getFileContent(std::string path);
+    std::string getFileName(std::string path);
 
 public:
     static Client *getInstance();
 
     void init(std::string path);
     void startCommand();
-    void startData();
     void sendCommand();
     void receiveCommandResponse();
 };

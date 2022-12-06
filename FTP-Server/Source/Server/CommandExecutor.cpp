@@ -30,7 +30,7 @@ string CommandExecutor::cwd(string currentPath, string destination) {
 
     struct stat buffer;
     if (stat(destination.c_str(), &buffer) == 0)return destination;
-    else return ERROR;
+    else return TYPE_ERROR;
 }
 
 bool CommandExecutor::mkd(string currentPath, string path) {
@@ -41,7 +41,7 @@ bool CommandExecutor::dele(string currentPath, string branch, string name) {
 
     if (branch == "-f") return (remove((currentPath + "/" + name).c_str()) == 0);
     else if (branch == "-d") {
-        if (cwd(currentPath, currentPath + "/" + name) != ERROR)
+        if (cwd(currentPath, currentPath + "/" + name) != TYPE_ERROR)
             return (system(("rm -rf " + currentPath + "/" + name).c_str()) == 0);
     }
     return false;
@@ -67,18 +67,19 @@ string CommandExecutor::help() {
     helper += "pwd, Path of current working directory\n";
     helper += "cwd <path>, Chane working directory to path\n";
     helper += "dele <path>, Delete file or directory\n";
-    helper += "\t -f <file name>, Delete file with file name\n";
-    helper += "\t -d <path>, Delete directory with path\n";
+    helper += "\t-f <file name>, Delete file with file name\n";
+    helper += "\t-d <path>, Delete directory with path\n";
     helper += "ls, List of files in current working directory\n";
     helper += "rename <from> <to>, Rename file\n";
     helper += "retr <name>, Fetch file with given name\n";
+    helper += "upload <name>, Upload file with given name\n";
     helper += "help, Print user manual\n";
     helper += "quit, Exit FTP server";
     return helper;
 }
 
 long CommandExecutor::getFileSize(string path) {
-    ifstream file(path, std::ifstream::ate | std::ifstream::binary);
+    ifstream file(path, ifstream::ate | ifstream::binary);
     if (!file.good()) return -1;
     return file.tellg();
 }
@@ -91,7 +92,7 @@ string CommandExecutor::getFileContent(string path) {
     return content;
 }
 
-string CommandExecutor::getFileName(std::string path) {
+string CommandExecutor::getFileName(string path) {
     string fileName;
     for (int i = path.size() - 1; i >= 0; i--) {
         if (path[i] == '/') break;
