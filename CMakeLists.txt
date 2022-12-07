@@ -4,3 +4,4 @@ project(CN_CA1)
 set(CMAKE_CXX_STANDARD 11)
 
 include(FTP-Server/CMakeLists.txt)
+include(Web-Server/CMakeLists.txt)
