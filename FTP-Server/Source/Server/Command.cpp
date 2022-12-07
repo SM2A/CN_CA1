@@ -91,6 +91,7 @@ void Command::response(int fd, int code) {
     else if (code == 501) msg = "501: Syntax error in parameters or arguments.";
     else if (code == 500) msg = "500: Error";
     else if (code == 425) msg = "425: Can't open data connection.";
+    else if (code == 123) msg = "123: Permission denied.";
 
     send(fd, msg.c_str(), msg.size(), 0);
 }

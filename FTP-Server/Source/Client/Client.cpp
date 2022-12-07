@@ -1,6 +1,5 @@
 #include <fstream>
 #include <cstdlib>
-#include <cstring>
 #include <sstream>
 #include "Client.h"
 #include <iostream>
@@ -76,6 +75,7 @@ void Client::sendCommand() {
 
     if (cmd == "ls") receiveDataResponse();
     if ((cmd == "retr") && (!value.empty())) receiveDataResponse();
+    if (cmd == "upload") handleUploadCommand(value);
 }
 
 void Client::receiveCommandResponse() {
@@ -85,6 +85,7 @@ void Client::receiveCommandResponse() {
 
     if (responseCode(string(buff), 230)) startData();
     if (responseCode(string(buff), 221)) exit(0);
+    if (responseCode(string(buff), 123)) throw runtime_error("Unauthorized");
 }
 
 bool Client::responseCode(string msg, int code) {
@@ -103,10 +104,10 @@ void Client::receiveDataResponse() {
     stringstream stream((string(buff)));
     getline(stream, type);
 
-    if (type == CONSOLE) {
+    if (type == TYPE_CONSOLE) {
         string line;
         while (getline(stream, line)) cout << line << endl;
-    } else if (type == _FILE_) {
+    } else if (type == TYPE_FILE) {
         string line, content, path;
         getline(stream, path);
         while (getline(stream, line, '\n')) content += (line + "\n");
@@ -117,4 +118,46 @@ void Client::receiveDataResponse() {
 
     receiveCommandResponse();
     sendCommand();
+}
+
+void Client::handleUploadCommand(string path) {
+    try {
+        receiveCommandResponse();
+
+        ifstream file(path);
+        if (file.is_open()) {
+            file.close();
+
+            string data = TYPE_FILE;
+            data += "\n";
+            data += getFileName(path);
+            data += "\n";
+            data += getFileContent(path);
+            send(dataFD, data.c_str(), data.size(), 0);
+
+            receiveCommandResponse();
+        } else {
+            cerr << "File not found" << endl;
+        }
+    } catch (runtime_error &e) {
+
+    }
+}
+
+string Client::getFileContent(string path) {
+    ifstream file(path);
+    string content, line;
+    while (getline(file, line)) content += (line + "\n");
+    file.close();
+    return content;
+}
+
+string Client::getFileName(string path) {
+    string fileName;
+    for (int i = path.size() - 1; i >= 0; i--) {
+        if (path[i] == '/') break;
+        fileName += path[i];
+    }
+    reverse(fileName.begin(), fileName.end());
+    return fileName;
 }

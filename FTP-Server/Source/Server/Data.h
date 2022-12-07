@@ -6,7 +6,8 @@
 class Data {
 
 private:
-    static void response(int fd, std::string data);
+    static void sendData(int fd, std::string data);
+    static void receiveData(int fd, std::string name);
 
     friend class Server;
 

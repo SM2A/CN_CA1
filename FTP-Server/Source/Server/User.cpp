@@ -1,6 +1,8 @@
 #include "User.h"
 
-User::User(std::string _username_, std::string _password_, bool _isAdmin_, long _capacity_, std::string _path_) {
+using namespace std;
+
+User::User(string _username_, string _password_, bool _isAdmin_, long _capacity_, string _path_) {
     this->username = _username_;
     this->password = _password_;
     this->isAdmin = _isAdmin_;
