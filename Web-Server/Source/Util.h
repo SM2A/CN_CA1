@@ -47,9 +47,16 @@ std::string generateResponse(const std::string &_path_) {
 
     std::string extension = fileExtension(path);
     std::ifstream file(path);
-
     std::stringstream fileBuffer, data;
-    fileBuffer << file.rdbuf();
+
+    if (file.is_open()) {
+        fileBuffer << file.rdbuf();
+    } else {
+        std::ifstream notFound(RES_PATH + "/404.html");
+        fileBuffer << notFound.rdbuf();
+        notFound.close();
+    }
+
     file.close();
 
     data << "HTTP/1.1 200 OK\n"
