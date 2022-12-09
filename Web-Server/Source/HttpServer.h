@@ -15,8 +15,6 @@ private:
 
     static HttpServer *instance;
 
-    std::string response(const std::string &request);
-
 public:
 
     static HttpServer *getInstance();

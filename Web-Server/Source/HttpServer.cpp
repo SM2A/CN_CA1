@@ -1,10 +1,6 @@
-#include "HttpServer.h"
 #include "Util.h"
-#include <iostream>
 #include <unistd.h>
-#include <sstream>
-#include <fstream>
-#include <algorithm>
+#include "HttpServer.h"
 
 using namespace std;
 
@@ -43,19 +39,17 @@ void HttpServer::startServer() {
         char buffer[BUFFER] = {0};
         read(requestFD, buffer, BUFFER);
 
+        cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
         cout << buffer << endl;
-        cout << "---------------------------------------------------------------------------------------------" << endl;
+        cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-        string response = this->response(string(buffer));
-        write(requestFD, response.c_str(), response.size());
+        string responseData = response(string(buffer));
+        write(requestFD, responseData.c_str(), responseData.size());
+
+        cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << endl;
+        cout << responseData << endl;
+        cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << endl;
 
         close(requestFD);
     }
-}
-
-string HttpServer::response(const string &request) {
-    string path = requestPath(request);
-    string data = generateResponse(path);
-    cout << data << endl;
-    return data;
 }

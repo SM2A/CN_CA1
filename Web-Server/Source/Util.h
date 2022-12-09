@@ -3,8 +3,8 @@
 
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <algorithm>
 
 #define RES_PATH std::string("../Web-Server/Res")
@@ -65,6 +65,10 @@ std::string generateResponse(const std::string &_path_) {
          << fileBuffer.str();
 
     return data.str();
+}
+
+std::string response(const std::string &request) {
+    return generateResponse(requestPath(request));
 }
 
 #endif
