@@ -5,7 +5,7 @@ SET (SERVER_DIR "${PROJECT_ROOT}/Server")
 SET (CLIENT_DIR "${PROJECT_ROOT}/Client")
 SET (COMMON_DIR "${PROJECT_ROOT}/Common")
 
-add_executable(server
+add_executable(ftp-server
         ${SERVER_DIR}/main.cpp
         ${COMMON_DIR}/static.h
         ${SERVER_DIR}/CommandExecutor.cpp
@@ -22,7 +22,7 @@ add_executable(server
         ${SERVER_DIR}/Data.cpp
         ${SERVER_DIR}/Data.h)
 
-add_executable(client
+add_executable(ftp-client
         ${CLIENT_DIR}/main.cpp
         ${COMMON_DIR}/static.h
         ${CLIENT_DIR}/Client.cpp
@@ -30,4 +30,4 @@ add_executable(client
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-target_link_libraries(server PRIVATE Threads::Threads)
+target_link_libraries(ftp-server PRIVATE Threads::Threads)
