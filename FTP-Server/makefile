@@ -10,7 +10,7 @@ SRC_FILES_C := $(wildcard $(SRC_DIR)/Client/*.cpp, wildcard $(SRC_DIR)/Client/*.
 all: clean ftp-server.out ftp-client.out
 
 ftp-server.out: $(SRC_FILES_S)
-	${CC} ${SRC_DIR}/Server/*.cpp -pthread -o ftp-ftp-server.out
+	${CC} ${SRC_DIR}/Server/*.cpp -pthread -o ftp-server.out
 
 ftp-client.out: $(SRC_FILES_C)
 	${CC} ${SRC_DIR}/Client/*.cpp -o ftp-client.out
