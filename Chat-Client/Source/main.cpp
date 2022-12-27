@@ -32,8 +32,9 @@ int main(int argc, char **argv) {
             if (strcmp(command, "exit\n") == 0) {
                 return 0;
             } else if (strcmp(command, "list\n") == 0) {
-                sprintf(input, "001000000000010\n");
-                send(fd, input, strlen(input), 0);
+                char message[BUFFER];
+                sprintf(message, "001000000000010\n");
+                send(fd, message, strlen(message), 0);
                 char buff[BUFFER] = {0};
                 recv(fd, buff, BUFFER, 0);
                 char payload_size[9];
