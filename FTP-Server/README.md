@@ -1,7 +1,7 @@
 # FTP Server/Client
 
 *You can download full PDF documentation in persian from [here](../Asset/ftp.pdf)
-and read it online from here[here](../Asset/ftp.md). I do recommend take a look.*
+and read it online from [here](../Asset/ftp.md). I do recommend take a look.*
 
 In this subproject (which actually was a full project) we implemented an FTP server and client.
 The server is able to handle multiple clients at the same time.
