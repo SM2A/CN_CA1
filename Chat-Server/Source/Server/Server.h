@@ -1,7 +1,7 @@
 #ifndef SERVER
 #define SERVER
 
-#include "../Message.h"
+#include "../Common/Message.h"
 #include <map>
 #include <vector>
 #include <string>

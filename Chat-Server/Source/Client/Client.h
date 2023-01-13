@@ -1,7 +1,7 @@
 #ifndef CLIENT
 #define CLIENT
 
-#include "../Message.h"
+#include "../Common/Message.h"
 #include <string>
 
 using namespace std;
