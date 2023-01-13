@@ -9,6 +9,8 @@ Packet format is as follows:
 
 ![Packet Format](../Asset/chat-packet.png)
 
+![Example](../Asset/chat-server.png)
+
 There are 3 commands provided by the client:
 - `list`: List all the users in the chat room
 - `send <username> <message>`: Send a message to a specific user

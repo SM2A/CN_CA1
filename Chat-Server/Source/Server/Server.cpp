@@ -260,7 +260,7 @@ void Server::handleReceive(pair<int, Message> &message)
                 }
                 to_delete_idxs.push_back(i);
                 char* reply_message =  Message(RECEIVEREPLY, 0, 3 + strlen(text), message_text).getMessagePacket();
-                sleep(0.1);
+                sleep(0.3);
                 send(message.first, reply_message, 5 + strlen(text), 0);
                 sendUserInfo(message.first, message_text, message.second.getId());
             }
