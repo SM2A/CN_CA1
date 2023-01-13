@@ -1,6 +1,8 @@
 #ifndef MESSAGE
 #define MESSAGE
 
+#define BUFFER_SIZE (1024)
+
 enum MessageTypes {
     EXIT = 0,
     CONNECT = 1,
@@ -16,17 +18,23 @@ enum MessageTypes {
 };
 
 class Message {
-    public:
+    private:
         MessageTypes type;
         short id;
         short length;
-        char *message, *message_packet;
+        char message[BUFFER_SIZE] = { 0 }, message_packet[BUFFER_SIZE] = { 0 };
 
-        unsigned char getTypeAndId(int type, short id);
+        short getTypeAndId(int type, short id);
     
     public:
         Message(const char *message);
         Message(MessageTypes type, short id, short length, const char *message);
+        Message(MessageTypes type, short id, short length, const char message);
+        MessageTypes getType() { return type; }
+        short getId() { return id; }
+        char* getMessage() { return message; }
+        char* getMessagePacket() { return message_packet; }
+        short getLength() { return length; }
 };
 
 #endif
