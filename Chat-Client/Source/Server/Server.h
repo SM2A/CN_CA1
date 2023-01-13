@@ -22,7 +22,7 @@ enum SendStatus {
 class Server {
     private:
         unsigned short id = 0;
-        map<int, thread*> rm;
+        map<int, thread> rm;
         vector<tuple<unsigned short, unsigned short, char*> > stored_messages;
         map<int, unsigned short> online_users;
         map<unsigned short, const char*> usernames;

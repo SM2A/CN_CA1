@@ -75,7 +75,6 @@ void Client::getMessages()
         char buffer[BUFFER_SIZE] = { 0 };
         read(this->sock_fd, buffer, BUFFER_SIZE);
         Message message = Message(buffer);
-        cerr<<"type: "<<message.getType()<<endl;
         switch (message.getType())
         {
             case LISTREPLY:
@@ -118,14 +117,12 @@ void Client::handleInfoReply(Message &message)
 
 void Client::handleReceiveReply(Message &message)
 {
-    cerr<<"fucccccKKK\n";
     char buffer[BUFFER_SIZE];
     char* text = message.getMessage();
     text += 2;
     recv(this->sock_fd, buffer, BUFFER_SIZE, 0);
     Message sender = Message(buffer);
     string username = sender.getMessage();
-    cerr<<"tyyyyppp: "<<sender.getType()<<endl;
     cout<<" - "<<username<<": "<<text<<endl;
 }
 

@@ -54,7 +54,6 @@ void Server::receiveMessage(int socket)
     {
         char buffer[BUFFER_SIZE] = { 0 };
         read(socket, buffer, BUFFER_SIZE);
-        cerr<<"sock: "<<buffer<<endl<<socket<<endl;
         received_messages_mutex.lock();
         received_messages.push_back(make_pair(socket, Message(buffer)));
         received_messages_mutex.unlock();
@@ -79,7 +78,6 @@ void Server::getMessage()
 void Server::analyzeMessage(pair<int, Message> &message)
 {
     MessageTypes type = message.second.getType();
-    cerr<<"type: "<<type<<endl;
     switch (type)
     {
         case EXIT:
@@ -116,12 +114,11 @@ void Server::handleExit(pair<int, Message> &message)
     close(message.first);
     shutdown(message.first, SHUT_RDWR);
     cerr<<"handleExit"<<endl;
-    auto it2 = this->rm.find(message.first);
-    auto curr_thread = this->rm[message.first];
-    this->rm.erase(it2);
-    if (curr_thread->joinable()){
-        curr_thread->join();terminate();}
-    cerr<<"ssssssssssssss\n";
+    if (this->rm[message.first].joinable()) 
+    {
+        this->rm[message.first].join();
+    }
+
 }
 
 void Server::handleConnect(pair<int, Message> &message)
@@ -300,7 +297,7 @@ void Server::acceptConnections()
             exit(EXIT_FAILURE);
         }
         cerr<<"newSOck:"<<new_socket<<endl;
-        rm[new_socket] = new thread(&Server::receiveMessage, this, new_socket);
+        this->rm[new_socket] = thread(&Server::receiveMessage, this, new_socket);
     }
     // for(auto &el : rm)
     // {
