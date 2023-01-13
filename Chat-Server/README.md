@@ -1,5 +1,7 @@
 # Chat Client
 
+*You can read full documentation from [here](../Asset/chat-server.md)*
+
 This is a simple chat client that uses the chat server to send and receive messages.
 
 This chat client uses TCP connection to communicate with the server. TCP connection is alive until
