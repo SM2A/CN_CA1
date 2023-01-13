@@ -9,6 +9,11 @@
 #include <mutex>
 #include <thread>
 #include <tuple>
+#include <sys/time.h> 
+#include <stdlib.h> 
+#include <errno.h> 
+#include <arpa/inet.h> 
+#include <sys/types.h> 
 
 #define PORT 8888
 
@@ -22,13 +27,13 @@ enum SendStatus {
 class Server {
     private:
         unsigned short id = 0;
-        map<int, thread> rm;
         vector<tuple<unsigned short, unsigned short, char*> > stored_messages;
         map<int, unsigned short> online_users;
         map<unsigned short, const char*> usernames;
         vector<pair<int, Message> > received_messages;
         mutex received_messages_mutex;
         int server_fd;
+        fd_set readfds;
         void handleExit(pair<int, Message> &message);
         void receiveMessage(int socket);
         void getMessage();

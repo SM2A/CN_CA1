@@ -23,6 +23,7 @@ Server::Server()
         cerr<<"socket failed"<<endl;
         exit(EXIT_FAILURE);
     }
+
  
     
     if (setsockopt(this->server_fd, SOL_SOCKET,
@@ -50,14 +51,10 @@ Server::Server()
 
 void Server::receiveMessage(int socket)
 {
-    while(true)
-    {
-        char buffer[BUFFER_SIZE] = { 0 };
-        read(socket, buffer, BUFFER_SIZE);
-        received_messages_mutex.lock();
-        received_messages.push_back(make_pair(socket, Message(buffer)));
-        received_messages_mutex.unlock();
-    }
+    char buffer[BUFFER_SIZE] = { 0 };
+    read(socket, buffer, BUFFER_SIZE);
+    received_messages.push_back(make_pair(socket, Message(buffer)));
+    
 }
 
 void Server::getMessage()
@@ -109,15 +106,11 @@ void Server::handleExit(pair<int, Message> &message)
     auto it = this->online_users.find(message.first);
     if (it != this->online_users.end())
     {
+        FD_CLR(message.first, &readfds); 
         this->online_users.erase(it);
     }
     close(message.first);
     shutdown(message.first, SHUT_RDWR);
-    cerr<<"handleExit"<<endl;
-    if (this->rm[message.first].joinable()) 
-    {
-        this->rm[message.first].join();
-    }
 
 }
 
@@ -182,7 +175,6 @@ void Server::sendUserInfo(int sock, char *user_id_char, unsigned short message_i
     }
     else
     {
-    cerr<<"id: "<<user_id<<endl<<"message_id: "<<message_id<<endl<<"username: "<<usernames[user_id]<<endl;
         char* reply_message = Message(INFOREPLY, message_id, strlen(this->usernames[user_id]), this->usernames[user_id]).getMessagePacket();
         send(sock, reply_message, strlen(reply_message), 0);
     }
@@ -245,7 +237,6 @@ void Server::handleSend(pair<int, Message> &message)
 
 void Server::handleReceive(pair<int, Message> &message)
 {
-    cerr<<"RRRR"<<endl;
     if (this->online_users.find(message.first) == this->online_users.end()) 
     {
         close(message.first);
@@ -256,7 +247,6 @@ void Server::handleReceive(pair<int, Message> &message)
         unsigned short user_id = this->online_users[message.first];
         for (int i = 0; i < this->stored_messages.size(); i++)
         {
-            cerr<<"id: "<<get<0>(this->stored_messages[i])<<endl<<"user:"<<user_id<<endl<<"sender:"<<get<1>(this->stored_messages[i])<<endl<<"message:"<<get<2>(this->stored_messages[i])<<endl;
             if (user_id == get<0>(this->stored_messages[i])) 
             {
                 char *text = get<2>(this->stored_messages[i]);
@@ -268,8 +258,9 @@ void Server::handleReceive(pair<int, Message> &message)
                 {
                     message_text[j + 2] = text[j];
                 }
+                to_delete_idxs.push_back(i);
                 char* reply_message =  Message(RECEIVEREPLY, 0, 3 + strlen(text), message_text).getMessagePacket();
-                
+                sleep(0.1);
                 send(message.first, reply_message, 5 + strlen(text), 0);
                 sendUserInfo(message.first, message_text, message.second.getId());
             }
@@ -287,22 +278,49 @@ void Server::acceptConnections()
 {
     while(true)
     {
+        FD_ZERO(&readfds);
+        FD_SET(this->server_fd, &readfds);
         struct sockaddr_in address;
-        int new_socket, addrlen = sizeof(address);
-        if ((new_socket
-            = accept(server_fd, (struct sockaddr*)&address,
-                    (socklen_t*)&addrlen))
-            < 0) {
-            perror("accept");
-            exit(EXIT_FAILURE);
+        int new_socket, addrlen = sizeof(address), max_sd = this->server_fd;
+
+        received_messages_mutex.lock();
+        for (auto const &el : this->online_users)
+        {
+            FD_SET(el.first, &readfds);
+            if (el.first > max_sd)
+            {
+                max_sd = el.first;
+
+            }
         }
-        cerr<<"newSOck:"<<new_socket<<endl;
-        this->rm[new_socket] = thread(&Server::receiveMessage, this, new_socket);
+        received_messages_mutex.unlock();
+        int activity = select( max_sd + 1, &readfds , NULL , NULL , NULL);
+        if ((activity < 0) && (errno != EINTR))  
+        {  
+            cerr<<"select error";
+            exit(EXIT_FAILURE);  
+        }
+        if (FD_ISSET(this->server_fd, &readfds))
+        {
+            if ((new_socket
+                = accept(server_fd, (struct sockaddr*)&address,
+                        (socklen_t*)&addrlen))
+                < 0) {
+                perror("accept");
+                exit(EXIT_FAILURE);
+            }
+            this->online_users[new_socket] = 0;
+        }
+        received_messages_mutex.lock();
+        for (auto const &el : this->online_users)
+        {
+            if (FD_ISSET(el.first, &readfds))
+            {
+                this->receiveMessage(el.first);
+            }
+        }
+        received_messages_mutex.unlock();
     }
-    // for(auto &el : rm)
-    // {
-    //     el.second.join();
-    // }
 }
 
 void Server::startServer() 
@@ -312,7 +330,7 @@ void Server::startServer()
     
     gm.join();
     ac.join();
-    // closing the listening socket
+
     shutdown(this->server_fd, SHUT_RDWR);
 }
 

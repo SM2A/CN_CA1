@@ -22,8 +22,8 @@ class Message {
         MessageTypes type;
         short id;
         short length;
-        char message[BUFFER_SIZE] = { 0 }, message_packet[BUFFER_SIZE] = { 0 };
-
+        char *message, *message_packet;
+        void emptyMessages();
         short getTypeAndId(int type, short id);
     
     public:

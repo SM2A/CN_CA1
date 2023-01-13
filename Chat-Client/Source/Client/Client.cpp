@@ -73,6 +73,9 @@ void Client::getMessages()
     while (true)
     {
         char buffer[BUFFER_SIZE] = { 0 };
+        char *begin = buffer;
+        char *end = begin + BUFFER_SIZE;
+        fill(begin, end, 0);
         read(this->sock_fd, buffer, BUFFER_SIZE);
         Message message = Message(buffer);
         switch (message.getType())
@@ -117,10 +120,13 @@ void Client::handleInfoReply(Message &message)
 
 void Client::handleReceiveReply(Message &message)
 {
-    char buffer[BUFFER_SIZE];
+    char buffer[BUFFER_SIZE] = { 0 };
+    char *begin = buffer;
+    char *end = begin + BUFFER_SIZE;
+    fill(begin, end, 0);
     char* text = message.getMessage();
     text += 2;
-    recv(this->sock_fd, buffer, BUFFER_SIZE, 0);
+    read(this->sock_fd, buffer, BUFFER_SIZE);
     Message sender = Message(buffer);
     string username = sender.getMessage();
     cout<<" - "<<username<<": "<<text<<endl;

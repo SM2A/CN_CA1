@@ -6,6 +6,7 @@ using namespace std;
 
 Message::Message(const char *message)
 {
+    this->emptyMessages();
     unsigned char type = message[0] & 0xF0;
     unsigned char id = message[0] & 0x0F;
     unsigned char length = message[1];
@@ -22,6 +23,7 @@ Message::Message(const char *message)
 
 Message::Message(MessageTypes type, short id, short length, const char *message)
 {
+    this->emptyMessages();
     this->id = id;
     this->type = type;
     this->length = length;
@@ -39,6 +41,7 @@ Message::Message(MessageTypes type, short id, short length, const char *message)
 
 Message::Message(MessageTypes type, short id, short length, const char message)
 {
+    this->emptyMessages();
     this->id = id;
     this->type = type;
     this->length = length;
@@ -53,4 +56,17 @@ short Message::getTypeAndId(int type, short id)
 {
     int type_and_id = type << 4 + id;
     return (short)type_and_id;
+}
+
+void Message::emptyMessages()
+{
+    this->message = new char[BUFFER_SIZE];
+    this->message_packet = new char[BUFFER_SIZE];
+    char *begin = this->message;
+    char *end = begin + BUFFER_SIZE;
+    fill(begin, end, 0);
+
+    char *begin2 = this->message_packet;
+    char *end2 = begin2 + BUFFER_SIZE;
+    fill(begin2, end2, 0);
 }
