@@ -4,6 +4,6 @@ cd ..
 cd Web-Server || exit
 make clean
 cd ..
-cd Chat-Client || exit
+cd Chat-Server || exit
 make clean
 cd ..

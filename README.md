@@ -8,4 +8,4 @@
 
 [Web Server](Web-Server/README.md)
 
-[Chat Client](Chat-Client/README.md)
+[Chat Server](Chat-Server/README.md)

@@ -4,6 +4,6 @@ cd ..
 cd Web-Server || exit
 make
 cd ..
-cd Chat-Client || exit
+cd Chat-Server || exit
 make
 cd ..
